@@ -1,12 +1,11 @@
 
 <?php
+  session_start();
+
   require_once('claim.php');
 
   // タイムゾーン設定
   date_default_timezone_set('Asia/Tokyo');
-
-  // セッション開始
-  session_start();
 
   // クラス生成
   $claim = new CClaim();
@@ -41,9 +40,7 @@
 
   // 不満読み込み
   $claim->read();
-
 ?>
-
 <!DOCTYPE html>
 <html lang="ja">
 <head>
@@ -63,8 +60,11 @@
   <!-- メッセージ -->
   <?php if(!empty($emptyMsgClaim)): ?>
     <p class="error_message"><?php echo $emptyMsgClaim; ?>
-  <?php endif; ?>
-  <?php if(!empty($successMsg)): ?>
+  <?php elseif(!empty($claim->getErrMsg())): ?>
+    <?php foreach($claim->getErrMsg() as $errMsg): ?>
+      <p class="error_message"><?php echo $errMsg; ?>
+    <?php endforeach; ?>
+  <?php elseif(!empty($successMsg)): ?>
     <p class="success_message"><?php echo $successMsg; ?>
   <?php endif; ?>
 

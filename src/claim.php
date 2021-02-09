@@ -19,30 +19,26 @@ class CClaim extends CFile{
 		$mysqli = connectDB();
 
 		// 接続エラーの確認
-		if( $mysqli->connect_errno ) {
+		if( $mysqli->errorCode() ) {
 			$this->error_message[] = '書き込みに失敗しました。 エラー番号 '.$mysqli->connect_errno.' : '.$mysqli->connect_error;
 		} else {
-			
-			// 文字コード設定
-			$mysqli->set_charset('utf8');
 			
 			// 書き込み日時を取得
 			$now_date = date("Y-m-d H:i:s");
 			
 			// データを登録するSQL作成
-			$sql = "INSERT INTO board (claim, post_date, user_id) VALUES ( '{$array['input-claim']}', '{$now_date}',1)";
+			$sql = "INSERT INTO claim (claim, post_date, post_user) VALUES ( '{$array['input-claim']}', '{$now_date}',1)";
 			
 			// データを登録
 			$res = $mysqli->query($sql);
-		
+			
 			if( $res ) {
 				$this->success_message = 'メッセージを書き込みました。';
 			} else {
 				$this->error_message[] = '書き込みに失敗しました。';
 			}
-		
-			// データベースの接続を閉じる
-			$mysqli->close();
+
+			$mysqli = null;
 
 		}
 	}
@@ -54,17 +50,16 @@ class CClaim extends CFile{
         $mysqli = connectDB();
 
 		// 接続エラーの確認
-		if( $mysqli->connect_errno ) {
-			$this->error_message[] = 'データの読み込みに失敗しました。 エラー番号 '.$mysqli->connect_errno.' : '.$mysqli->connect_error;
+		if( $mysqli->errorCode() ) {
+			$this->error_message[] = 'データの読み込みに失敗しました。 エラー番号 '.$mysqli->errorInfo().' : '.$mysqli->errorInfo()[0];
 		} else {
-			$sql = "SELECT claim, post_date FROM board ORDER BY post_date DESC";
+			$sql = "SELECT claim, post_date FROM claim ORDER BY post_date DESC";
 			$res = $mysqli->query($sql);
 			
 			if( $res ) {
-				$this->claim_array = $res->fetch_all(MYSQLI_ASSOC);
+				$this->claim_array = $res->fetchAll();
 			}
 			
-			$mysqli->close();
 		}
 
 	}

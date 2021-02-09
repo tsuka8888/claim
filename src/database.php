@@ -10,7 +10,7 @@ function connectDB() {
 
   if($_SERVER['SERVER_NAME']=='localhost'){
     //ローカル環境
-    $host = 'mysql:host=127.0.0.1';
+    $host = 'mysql:host=db';
     $db = 'claim';
     $user = 'root';
     $pass = 'rootpassword';
